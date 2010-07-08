@@ -73,7 +73,6 @@ static int onSupports (int requestCode);
 static void onCancel (RIL_Token t);
 static const char *getVersion();
 static int isRadioOn();
-static int unlockBaseBand();
 static SIM_Status getSIMStatus();
 static int getCardStatus(RIL_CardStatus **pp_card_status);
 static void freeCardStatus(RIL_CardStatus *p_card_status);
@@ -321,6 +320,8 @@ static int callFromCLCCLine(char *line, RIL_Call *p_call)
         err = at_tok_nextint(&line, &p_call->toa);
         if (err < 0) goto error;
     }
+
+    p_call->uusInfo = NULL;
 
     return 0;
 
@@ -1508,12 +1509,25 @@ onRequest (int request, void *data, size_t datalen, RIL_Token t)
         case RIL_REQUEST_DTMF: {
             char c = ((char *)data)[0];
             char *cmd;
-            asprintf(&cmd, "AT+VTS=%c", (int)c);
+            asprintf(&cmd, "AT+VTS=%c,1", (int)c);
             at_send_command(cmd, NULL);
             free(cmd);
             RIL_onRequestComplete(t, RIL_E_SUCCESS, NULL, 0);
             break;
         }
+	case RIL_REQUEST_DTMF_START: {
+            char c = ((char *)data)[0];
+            char *cmd;
+            asprintf(&cmd, "at+xvts=%c", (int)c);
+            at_send_command(cmd, NULL);
+            free(cmd);
+            RIL_onRequestComplete(t, RIL_E_SUCCESS, NULL, 0);
+            break;
+        }
+	case RIL_REQUEST_DTMF_STOP:
+            at_send_command("at+xvts=", NULL);
+            RIL_onRequestComplete(t, RIL_E_SUCCESS, NULL, 0);
+            break;
         case RIL_REQUEST_SEND_SMS:
             requestSendSMS(data, datalen, t);
             break;
@@ -2328,12 +2342,10 @@ const RIL_RadioFunctions *RIL_Init(const struct RIL_Env *env, int argc, char **a
 
     Platform = IPHONE_2G;
 
-    {
-        char buff[PROPERTY_VALUE_MAX];
-            if(property_get("ro.product.device", buff, NULL) > 0
-                    && strcmp(buff, "iPhone3G") == 0)
-                Platform = IPHONE_3G;
-    }
+    char buff[PROPERTY_VALUE_MAX];
+    if(property_get("ro.product.device", buff, NULL) > 0
+		&& strcmp(buff, "iPhone3G") == 0)
+	Platform = IPHONE_3G;
 
     if(Platform == IPHONE_3G)
         s_device_path = "/dev/ttyS4";
@@ -2390,12 +2402,10 @@ int main (int argc, char **argv)
 
     Platform = IPHONE_2G;
 
-    {
-        char buff[PROPERTY_VALUE_MAX];
-            if(property_get("ro.product.device", buff, NULL) > 0
-                    && strcmp(buff, "iPhone3G") == 0)
-                Platform = IPHONE_3G;
-    }
+    char buff[PROPERTY_VALUE_MAX];
+    if(property_get("ro.product.device", buff, NULL) > 0
+		&& strcmp(buff, "iPhone3G") == 0)
+	Platform = IPHONE_3G;
 
     if(Platform == IPHONE_3G)
         s_device_path = "/dev/ttyS4";
