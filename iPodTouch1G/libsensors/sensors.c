@@ -46,6 +46,7 @@
 #define CONVERT                 (GRAVITY_EARTH/64.0f)
 #define SENSORS_ACCELERATION    (1 << ID_ACCELERATION)
 #define INPUT_DIR               "/dev/input"
+#define ACCEL_SYS_DIR		"/sys/devices/i2c-0/0-003a/input"
 #define SUPPORTED_SENSORS       (SENSORS_ACCELERATION)
 #define EVENT_MASK_ACCEL_ALL    ( (1 << ABS_X) | (1 << ABS_Y) | (1 << ABS_Z))
 #define DEFAULT_THRESHOLD 100
@@ -73,8 +74,8 @@ int control_fd[2] = { -1, -1 };
 static const struct sensor_t apple_sensor_list[] =
 {
     {
-        .name = "Iphone 3G LIS331DL 3-axis Accelerometer",
-        .vendor = "Dario Russo",
+        .name = "LIS331DL 3-axis Accelerometer",
+        .vendor = "STMicroelectronics",
         .version = 1,
         .handle =SENSOR_TYPE_ACCELEROMETER,
         .type = SENSOR_TYPE_ACCELEROMETER,
@@ -114,6 +115,7 @@ int open_sensors_phy(struct sensors_control_device_t *dev)
     int res;
     uint8_t bits[4];
     DIR *dir;
+    DIR *sys_dir;
     struct dirent *de;
 
 
@@ -121,22 +123,27 @@ int open_sensors_phy(struct sensors_control_device_t *dev)
     if (dir == NULL)
         return -1;
 
+    sys_dir = opendir(ACCEL_SYS_DIR);
+    if (dir == NULL)
+        return -1;
+
 
     strcpy(devname, INPUT_DIR);
     filename = devname + strlen(devname);
-    *filename++ = '/';
+    strcpy(filename, "/event");
 
-    while ((de = readdir(dir)))
+    while ((de = readdir(sys_dir)))
     {
         if (de->d_name[0] == '.' &&
                 (de->d_name[1] == '\0' ||
                  (de->d_name[1] == '.' && de->d_name[2] == '\0')))
             continue;
-        strcpy(filename, de->d_name);
+	filename = devname + strlen(devname);
+	*filename++ = de->d_name[5];
         fd = open(devname, O_RDONLY);
         if (fd < 0)
         {
-            LOGE("iPhone Accelerometer:Couldn't open %s, error = %d", devname, fd);
+            LOGE("Accelerometer: Couldn't open %s, error = %d", devname, fd);
             continue;
         }
         res = ioctl(fd, EVIOCGBIT(EV_ABS, 4), bits);
@@ -146,29 +153,21 @@ int open_sensors_phy(struct sensors_control_device_t *dev)
             continue;
         }
 
-        LOGD("Sensors.apple: Dario: open_sensors_phys: opened %s...\n",filename);    
         closedir(dir);
         return fd;
     }
     closedir(dir);
 
-    LOGD("Sensors.apple: Dario: open_sensors_phys: error\n");
     return -1;
 }
 
 static native_handle_t *control_open_data_source(struct sensors_control_device_t *dev)
 {
     native_handle_t *hd;
-/*
-    if (event_fd != -1) {
-        LOGE("iPhone Accelerometer: Sensor open and not yet closed\n");
-        return NULL;
-    }
-*/
     if (control_fd[0] == -1 && control_fd[1] == -1) {
         if (socketpair(AF_LOCAL, SOCK_STREAM, 0, control_fd) < 0 )
         {
-            LOGE("iPhone Accelerometer:could not create thread control socket pair: %s",
+            LOGE("Accelerometer: could not create thread control socket pair: %s",
                  strerror(errno));
             return NULL;
         }
@@ -176,7 +175,6 @@ static native_handle_t *control_open_data_source(struct sensors_control_device_t
 
     sensor_fd = open_sensors_phy(dev);
 
-    LOGD("iPhone Accelerometer:Open sensor %d\n", sensor_fd);
     hd = native_handle_create(1, 0);
     hd->data[0] = sensor_fd;
 
@@ -201,11 +199,11 @@ static int control_activate(struct sensors_control_device_t *dev,
 
     if (!enabled)
     {
-        LOGD("Iphone: Deactivating Accelerometer sensor\n");
+        LOGD("Accelerometer: Deactivating Accelerometer sensor\n");
     }
     else
     {
-        LOGD("iPhone: Activating Accelerometer sensor\n");
+        LOGD("Accelerometer: Activating Accelerometer sensor\n");
     }
 
     return 0;
@@ -213,17 +211,11 @@ static int control_activate(struct sensors_control_device_t *dev,
 
 static int control_set_delay(struct sensors_control_device_t *dev, int32_t ms)
 {
-    LOGD("iPhone Accelerometer:Control set delay %d ms is not supported and fix to 400\n", ms);
     return 0;
 }
 
 static int control_wake(struct sensors_control_device_t *dev)
 {
-    LOGD("iPhone Accelerometer:Control wake\n");
-    /*
-    char ch = WAKE_SOURCE;
-    write(control_fd[CONTROL_WRITE], &ch, sizeof(char));
-    */
     int err = 0;
     if (control_fd[CONTROL_WRITE] > 0) 
     {
@@ -243,11 +235,8 @@ static int control_wake(struct sensors_control_device_t *dev)
 
 int sensors_open(struct sensors_data_device_t *dev, native_handle_t* hd)
 {
-    LOGD("iPhone Accelerometer:Open sensor\n");
-    
     event_fd = dup(hd->data[0]);
-    
-    
+
     native_handle_close(hd);
     native_handle_delete(hd);
 
@@ -269,7 +258,6 @@ int sensors_close(struct sensors_data_device_t *dev)
     if (event_fd > 0) {
         close(event_fd);
         event_fd = -1;
-        LOGD("iPhone Accelerometer:Close sensor\n");
     }
     return 0;
 }
@@ -303,7 +291,6 @@ int sensors_poll(struct sensors_data_device_t *dev, sensors_data_t* sensors)
 	    if (ch==WAKE_SOURCE)
 	    {
 		    FD_ZERO(&rfds);
-	            LOGD("iPhone Accelerometer:Wake up by the control system\n");
 	            return -EWOULDBLOCK;
 	    }
         }
@@ -325,19 +312,11 @@ int sensors_poll(struct sensors_data_device_t *dev, sensors_data_t* sensors)
                 break;
             case ABS_Y:
                 new_sensors |= ACCELERATION_Y;
-#ifdef IPHONE2G		
-                sensors->acceleration.y = -(ev.value * CONVERT);
-#else		
                 sensors->acceleration.y = (ev.value * CONVERT);
-#endif
                 break;
             case ABS_Z:
                 new_sensors |= ACCELERATION_Z;
-#ifdef IPHONE2G		
-                sensors->acceleration.z = -(ev.value * CONVERT);
-#else		
                 sensors->acceleration.z = (ev.value * CONVERT);
-#endif
                 break;
             }
         }
@@ -345,11 +324,6 @@ int sensors_poll(struct sensors_data_device_t *dev, sensors_data_t* sensors)
 		return 0;
 	if (new_sensors == (ACCELERATION_X | ACCELERATION_Y | ACCELERATION_Z))
 	{
-#if 0
-            LOGD("%s: x:%f, y:%f, z:%f\n", __FUNCTION__,
-               sensors->acceleration.x, sensors->acceleration.y,
-               sensors->acceleration.z);
-#endif
 	    	sensors->sensor = SENSOR_TYPE_ACCELEROMETER;
 		return SENSOR_TYPE_ACCELEROMETER;
 	}
