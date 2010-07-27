@@ -115,15 +115,9 @@ int open_sensors_phy(struct sensors_control_device_t *dev)
     int res;
     uint8_t bits[4];
     DIR *dir;
-    DIR *sys_dir;
     struct dirent *de;
 
-
-    dir = opendir(INPUT_DIR);
-    if (dir == NULL)
-        return -1;
-
-    sys_dir = opendir(ACCEL_SYS_DIR);
+    dir = opendir(ACCEL_SYS_DIR);
     if (dir == NULL)
         return -1;
 
@@ -132,7 +126,7 @@ int open_sensors_phy(struct sensors_control_device_t *dev)
     filename = devname + strlen(devname);
     strcpy(filename, "/event");
 
-    while ((de = readdir(sys_dir)))
+    while ((de = readdir(dir)))
     {
         if (de->d_name[0] == '.' &&
                 (de->d_name[1] == '\0' ||
@@ -140,6 +134,7 @@ int open_sensors_phy(struct sensors_control_device_t *dev)
             continue;
 	filename = devname + strlen(devname);
 	*filename++ = de->d_name[5];
+	*filename++ = '\0';
         fd = open(devname, O_RDONLY);
         if (fd < 0)
         {
