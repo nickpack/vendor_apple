@@ -1738,41 +1738,28 @@ setRadioState(RIL_RadioState newState)
 static int ultraUnlock(){
 	ATResponse *p_response = NULL;
 	ATLine *p_cur;
-	int found;
 	int err;
 
-	err = at_send_command_multiline("AT+XGENDATA", "+XGENDATA:", &p_response);
+	err = at_send_command_singleline("AT+XGENDATA", "           \"ICE2_MODEM_", &p_response);
 	if (err != 0)
 		return -1;
 
-	for (p_cur = p_response->p_intermediates; p_cur != NULL; p_cur = p_cur->p_next) {
-		char *Line = p_cur->line;
-		if(strstr(Line, "ICE2_MODEM_05.13.04") != NULL) {
-			at_send_command(bb051304, NULL);
-			found = 1;
-			break;
-		} else if(strstr(Line, "ICE2_MODEM_05.12.01") != NULL) {
-			at_send_command(bb051201, NULL);
-			found = 1;
-			break;
-		} else if(strstr(Line, "ICE2_MODEM_05.11.07") != NULL) {
-			at_send_command(bb051107, NULL);
-			found = 1;
-			break;
-		} else if(strstr(Line, "ICE2_MODEM_04.26.08") != NULL) {
-			at_send_command(bb042608, NULL);
-			found = 1;
-			break;
-		}
-	}
-
-	at_response_free(p_response);
-
-	if (!found) {
+	char *Line = p_response->p_intermediates->line;
+	if(strstr(Line, "ICE2_MODEM_05.13.04") != NULL) {
+		at_send_command(bb051304, NULL);
+	} else if(strstr(Line, "ICE2_MODEM_05.12.01") != NULL) {
+		at_send_command(bb051201, NULL);
+	} else if(strstr(Line, "ICE2_MODEM_05.11.07") != NULL) {
+		at_send_command(bb051107, NULL);
+	} else if(strstr(Line, "ICE2_MODEM_04.26.08") != NULL) {
+		at_send_command(bb042608, NULL);
+	} else {
+		at_response_free(p_response);
 		LOGI("No matching baseband found for Ultrasn0w.");
 		return -1;
 	}
 
+	at_response_free(p_response);
 
 	at_send_command("at+xlck=0",NULL);
 	at_send_command("at+xlck=1,1,\"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\"",NULL);
@@ -1781,7 +1768,6 @@ static int ultraUnlock(){
 	at_send_command("at+xlck=1,4,\"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\"",NULL);
 	at_send_command("at+xlck=2",NULL);
 	at_send_command("at",NULL);
-	at_send_command("at+cpin?",NULL);
 
 	if (getSIMStatus() != SIM_NETWORK_PERSONALIZATION) {
 		LOGI("Unlocked by ultrasn0w");
@@ -1872,7 +1858,6 @@ static int unlockWildcard()
 static int unlockBaseBand() {
 	int err;
 
-//	if (getSIMStatus() != SIM_NETWORK_PERSONALIZATION) {
 	if (getSIMStatus() == SIM_READY) {
 		LOGI("Unlocked");
 		return 0;
