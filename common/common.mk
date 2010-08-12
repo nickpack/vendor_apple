@@ -10,6 +10,10 @@ PRODUCT_MANUFACTURER := apple
 
 LIBERTAS := $(LOCAL_PATH)libertas/
 
+PRODUCT_PACKAGES += \
+    ADWLauncher \
+    Superuser
+
 PRODUCT_COPY_FILES += \
 	$(LIBERTAS)LICENCE.libertas:system/etc/firmware/LICENCE.libertas \
 	$(LIBERTAS)sd8686.bin:system/etc/firmware/sd8686.bin \
