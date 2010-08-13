@@ -1,2 +1,12 @@
-on boot
+on init
     chown system system  /sys/class/backlight/iphone-bl/brightness
+    
+	setprop net.dns1 208.67.222.222
+	setprop net.dns2 208.67.220.220
+
+on boot
+	# SD Emulation: force mounted state
+    setprop EXTERNAL_STORAGE_STATE mounted
+	
+	# Fix for market not downloading
+    mkdir -p /mnt/sdcard/download -m 0777
