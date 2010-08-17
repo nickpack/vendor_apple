@@ -12,6 +12,7 @@ LIBERTAS := $(LOCAL_PATH)libertas/
 
 PRODUCT_PACKAGES += \
     ADWLauncher \
+    Rebooter \
     Superuser \
     Wallpapers
 
@@ -33,9 +34,4 @@ PRODUCT_BRAND := apple
 PRODUCT_NAME := apple
 PRODUCT_BOARD := apple
 
-INCLUDES := frameworks/base/data/sounds/AudioPackage2.mk \
-	frameworks/base/data/sounds/AudioPackage3.mk \
-	frameworks/base/data/sounds/AudioPackage4.mk \
-	frameworks/base/data/sounds/OriginalAudio.mk
-
-include $(INCLUDES)
+include frameworks/base/data/sounds/AudioPackage4.mk
