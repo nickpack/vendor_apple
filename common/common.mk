@@ -12,7 +12,8 @@ LIBERTAS := $(LOCAL_PATH)libertas/
 
 PRODUCT_PACKAGES += \
     ADWLauncher \
-    Superuser
+    Superuser \
+    Wallpapers
 
 PRODUCT_COPY_FILES += \
 	$(LIBERTAS)LICENCE.libertas:system/etc/firmware/LICENCE.libertas \
