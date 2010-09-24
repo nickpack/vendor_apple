@@ -324,8 +324,6 @@
   <apn carrier="Gee! MMS" mcc="525" mnc="05" apn="shmms" user="" server="" password="" proxy="" port="" mmsproxy="10.12.1.80" mmsport="80" mmsprotocol="null" mmsc="http://mms.starhubgee.com.sg:8002/" type="mms"/>
   <apn carrier="Geocell" mcc="282" mnc="01" apn="internet" user="" password="" server="" proxy="" port="" apntype="internet"/>
   <apn carrier="Geocell Mms" mcc="282" mnc="01" apn="mms" user="" password="" mmsc="http://mms.geocell.com.ge/cmmsc/post" mmsproxy="010.011.240.007" mmsport="8080" apntype="mms"/>
-  <apn carrier="GiffGaff" apn="giffgaff.com" user="giffgaff" password="password" proxy="193.113.200.195" port="8080" mcc="234" mnc="10" type="default,supl"/>
-  <apn carrier="GiffGaff MMS" apn="giffgaff.com" user="giffgaff" password="password" mmsproxy="193.113.200.195" mmsport="8080" mmsc="http://mmsc.mediamessaging.co.uk:8002" server="http://mmsc.mediamessaging.co.uk:8002" mcc="234" mnc="10" type="mms" />
   <apn carrier="Glo" mcc="621" mnc="50" apn="glo3gvideo" user="" server="" password="" proxy="10.100.98.22" proxyport="3130" type="default,supl"/>
   <apn carrier="Glo MMS" mcc="621" mnc="50" apn="glomms" user="mms" server="" password="mms" mmsc="http://mms.gloworld.com/mmsc" mmsproxy="010.100.082.004" mmsport="3130" type="mms"/>
   <apn carrier="GLOBE" mcc="515" mnc="02" apn="internet.globe.com.ph" user="" server="" password="" mmsc="" type="default,supl"/>
