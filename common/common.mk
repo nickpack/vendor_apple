@@ -18,13 +18,6 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_PROPERTY_OVERRIDES += \
         ro.firmware_dir1=/host/firmware
-	ro.config.ringtone=DonMessWivIt.ogg \
-        ro.ril.enable.3g.prefix=1 \
-        ro.ril.oem.nosim.ecclist=911,112,113,115,117,999,000,08,118,120,122,110,119,995 \
-        ro.ril.emc.mode=2 \
-        ro.ril.hsxpa=2 \
-        ro.ril.gprsclass=12 \
-	ro.sf.lcd_density=140
 
 PRODUCT_COPY_FILES += \
 	$(LIBERTAS)LICENCE.libertas:system/etc/firmware/LICENCE.libertas \
