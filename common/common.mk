@@ -38,4 +38,6 @@ PRODUCT_BRAND := apple
 PRODUCT_NAME := apple
 PRODUCT_BOARD := apple
 
+PRODUCT_PACKAGE_OVERLAYS += vendor/apple/overlay/common
+
 include frameworks/base/data/sounds/AudioPackage4.mk
