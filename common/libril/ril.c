@@ -1309,15 +1309,15 @@ static void  requestEnterSimPin(void*  data, size_t  datalen, RIL_Token  t)
     const char**  strings = (const char**)data;;
 
     if ( datalen == sizeof(char*) ) {
-		LOGI("PIN is: %s",strings[0]);
+		//LOGI("PIN is: %s",strings[0]);
 		asprintf(&cmd, "AT+CPIN=\"%s\"", strings[0]);
     } else if ( datalen == 2*sizeof(char*) ) {
-		LOGI("2 Part PIN: %d %d", strings[0], strings[1]);
+		//LOGI("2 Part PIN: %s %s", strings[0], strings[1]);
 		asprintf(&cmd, "AT+CPIN=\"%s\",\"%s\"", strings[0], strings[1]);
     } else
         goto error;
 
-    err = at_send_command_singleline(cmd, "+CPIN:", &p_response);
+    err = at_send_command(cmd, &p_response);
     free(cmd);
 
     if (err < 0 || p_response->success == 0) {
