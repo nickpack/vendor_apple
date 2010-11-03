@@ -1,0 +1,5 @@
+add_lunch_combo iPhone2G-eng
+add_lunch_combo iPhone3G-eng
+add_lunch_combo iPhone4-eng
+add_lunch_combo iPodTouch1G-eng
+add_lunch_combo iPodTouch2G-eng
