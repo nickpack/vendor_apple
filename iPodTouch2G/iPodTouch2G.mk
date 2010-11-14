@@ -1,10 +1,10 @@
 LOCAL_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-COMMON := $(subst iPodTouch1G,common,$(LOCAL_DIR))
+COMMON := $(subst iPodTouch2G,common,$(LOCAL_DIR))
 
 $(call inherit-product, $(COMMON)/common.mk)
 
-PRODUCT_NAME := iPodTouch1G
-PRODUCT_DEVICE := iPodTouch1G
+PRODUCT_NAME := iPodTouch2G
+PRODUCT_DEVICE := iPodTouch2G
 
 
 PRODUCT_COPY_FILES += \

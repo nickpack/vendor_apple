@@ -1,10 +1,10 @@
 LOCAL_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-COMMON := $(subst iPhone3G,common,$(LOCAL_DIR))
+COMMON := $(subst iPhone4,common,$(LOCAL_DIR))
 
 $(call inherit-product, $(COMMON)/common.mk)
 
-PRODUCT_NAME := iPhone3G
-PRODUCT_DEVICE := iPhone3G
+PRODUCT_NAME := iPhone4
+PRODUCT_DEVICE := iPhone4
 
 
 PRODUCT_COPY_FILES += \
