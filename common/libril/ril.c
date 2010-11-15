@@ -108,6 +108,8 @@ static int s_port = -1;
 static const char * s_device_path = NULL;
 static int          s_device_socket = 0;
 
+static int isUltrasnow = 1;
+
 /* trigger change to this with s_state_cond */
 static int s_closed = 0;
 
@@ -1301,35 +1303,6 @@ error:
 
 }
 
-static void  requestEnterSimPin(void*  data, size_t  datalen, RIL_Token  t)
-{
-    ATResponse   *p_response = NULL;
-    int           err;
-    char*         cmd = NULL;
-    const char**  strings = (const char**)data;;
-
-    if ( datalen == sizeof(char*) ) {
-		//LOGI("PIN is: %s",strings[0]);
-		asprintf(&cmd, "AT+CPIN=\"%s\"", strings[0]);
-    } else if ( datalen == 2*sizeof(char*) ) {
-		//LOGI("2 Part PIN: %s %s", strings[0], strings[1]);
-		asprintf(&cmd, "AT+CPIN=\"%s\",\"%s\"", strings[0], strings[1]);
-    } else
-        goto error;
-
-    err = at_send_command(cmd, &p_response);
-    free(cmd);
-
-    if (err < 0 || p_response->success == 0) {
-error:
-        RIL_onRequestComplete(t, RIL_E_PASSWORD_INCORRECT, NULL, 0);
-    } else {
-        RIL_onRequestComplete(t, RIL_E_SUCCESS, NULL, 0);
-    }
-    at_response_free(p_response);
-}
-
-
 static void  requestSendUSSD(void *data, size_t datalen, RIL_Token t)
 {
     const char *ussdRequest;
@@ -1757,6 +1730,7 @@ static int ultraUnlock(){
 		at_send_command(bb042608, NULL);
 	} else {
 		at_response_free(p_response);
+		isUltrasnow = 0;
 		LOGI("No matching baseband found for Ultrasn0w.");
 		return -1;
 	}
@@ -1788,7 +1762,7 @@ static int unlockWildcard()
 	int iCnt=1;
 	char cUnlockString[2049];
 	char cUnlockPart[513];
-
+		
 	FILE *f = fopen(PATH_ACTIVATIONRECORD, "rb");
 	if(f == 0)
 	{
@@ -1856,6 +1830,39 @@ static int unlockWildcard()
 		return -1;
 	}
 }
+
+static void  requestEnterSimPin(void*  data, size_t  datalen, RIL_Token  t)
+{
+    ATResponse   *p_response = NULL;
+    int           err;
+    char*         cmd = NULL;
+    const char**  strings = (const char**)data;;
+
+    if ( datalen == sizeof(char*) ) {
+		//LOGI("PIN is: %s",strings[0]);
+		asprintf(&cmd, "AT+CPIN=\"%s\"", strings[0]);
+    } else if ( datalen == 2*sizeof(char*) ) {
+		//LOGI("2 Part PIN: %s %s", strings[0], strings[1]);
+		asprintf(&cmd, "AT+CPIN=\"%s\",\"%s\"", strings[0], strings[1]);
+    } else
+        goto error;
+
+    err = at_send_command(cmd, &p_response);
+    free(cmd);
+
+    if (err < 0 || p_response->success == 0) {
+error:
+        RIL_onRequestComplete(t, RIL_E_PASSWORD_INCORRECT, NULL, 0);
+    } else {
+        RIL_onRequestComplete(t, RIL_E_SUCCESS, NULL, 0);
+    }
+    at_response_free(p_response);
+
+	if (isUltrasnow != 1) {
+		unlockWildcard();
+	}
+}
+
 
 static int unlockBaseBand() {
 	int err;
