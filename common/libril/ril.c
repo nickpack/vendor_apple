@@ -1316,6 +1316,158 @@ static void  requestSendUSSD(void *data, size_t datalen, RIL_Token t)
 
 }
 
+static int ultraUnlock(){
+	ATResponse *p_response = NULL;
+	ATLine *p_cur;
+	int err;
+
+	err = at_send_command_singleline("AT+XGENDATA", "           \"ICE2_MODEM_", &p_response);
+	if (err != 0)
+		return -1;
+
+	char *Line = p_response->p_intermediates->line;
+	if(strstr(Line, "ICE2_MODEM_05.13.04") != NULL) {
+		at_send_command(bb051304, NULL);
+	} else if(strstr(Line, "ICE2_MODEM_05.12.01") != NULL) {
+		at_send_command(bb051201, NULL);
+	} else if(strstr(Line, "ICE2_MODEM_05.11.07") != NULL) {
+		at_send_command(bb051107, NULL);
+	} else if(strstr(Line, "ICE2_MODEM_04.26.08") != NULL) {
+		at_send_command(bb042608, NULL);
+	} else {
+		at_response_free(p_response);
+		isUltrasnow = 0;
+		LOGI("No matching baseband found for Ultrasn0w.");
+		return -1;
+	}
+
+	at_response_free(p_response);
+
+	at_send_command("at+xlck=0",NULL);
+	at_send_command("at+xlck=1,1,\"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\"",NULL);
+	at_send_command("at+xlck=1,2,\"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\"",NULL);
+	at_send_command("at+xlck=1,3,\"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\"",NULL);
+	at_send_command("at+xlck=1,4,\"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\"",NULL);
+	at_send_command("at+xlck=2",NULL);
+	at_send_command("at",NULL);
+
+	if (getSIMStatus() != SIM_NETWORK_PERSONALIZATION) {
+		LOGI("Unlocked by ultrasn0w");
+		return 0;
+	}
+
+	LOGE("Ultrasn0w unlock unsuccessful");
+	return -1;
+}
+
+static int unlockWildcard()
+{
+	char buf[1000000];
+	int len;
+	int zero=0;
+	int iCnt=1;
+	char cUnlockString[2049];
+	char cUnlockPart[513];
+		
+	FILE *f = fopen(PATH_ACTIVATIONRECORD, "rb");
+	if(f == 0)
+	{
+		LOGD("No Activation Report Found");
+		return -1;
+	}
+	len = fread(buf, 1, 1000000, f);
+	fclose(f);
+
+	if(len <= 0)
+	{
+		LOGD("No Activation Record Found");
+		return -1;
+	}
+
+	int i;
+	short iFoundRecord = 0;
+	for(i = 0; i < (len-(int)strlen("WildcardTicket")); i++) {
+		if(memcmp(&buf[i], "WildcardTicket", strlen("WildcardTicket")) == 0)
+		{
+			iFoundRecord = 1;
+			break;
+		}
+	}
+	if(iFoundRecord == 1)
+	{
+		memcpy(cUnlockString, &buf[i+0x13], 2048);
+		for(i = 0; i < 2048; i++) {
+			if(cUnlockString[i] == '"') zero=1;
+			if(zero == 1) cUnlockString[i]='0';
+		}
+		cUnlockString[2048]='\0';
+
+		LOGD("Sending 1st Unlock Command");
+		//at+xlck=0
+		at_send_command("AT+XLCK=0", NULL);
+
+		char * cmd;
+
+		for(i = 0; i < 2048; i+=512) {
+			LOGD("Sending Unlock Payload");
+			strncpy(cUnlockPart, &cUnlockString[i], 512);
+			cUnlockPart[512]='\0';
+			LOGD("Sending Unlock Payload");
+			asprintf(&cmd, "AT+XLCK=1,%d,\"%s\"", iCnt, cUnlockPart);
+			at_send_command(cmd, NULL);
+			free(cmd);
+
+			iCnt++;
+		}
+		//at+xlck=2
+		LOGD("Sending Last Unlock Command");
+		at_send_command("AT+XLCK=2", NULL);
+
+		if (getSIMStatus() != SIM_NETWORK_PERSONALIZATION) {
+			LOGI("Unlocked");
+			return 0;
+		}
+
+		return -1;
+	}
+	else
+	{
+		LOGD("No Activation Record Found.");
+		return -1;
+	}
+}
+
+static void  requestEnterSimPin(void*  data, size_t  datalen, RIL_Token  t)
+{
+    ATResponse   *p_response = NULL;
+    int           err;
+    char*         cmd = NULL;
+    const char**  strings = (const char**)data;;
+
+    if ( datalen == sizeof(char*) ) {
+		//LOGI("PIN is: %s",strings[0]);
+		asprintf(&cmd, "AT+CPIN=\"%s\"", strings[0]);
+    } else if ( datalen == 2*sizeof(char*) ) {
+		//LOGI("2 Part PIN: %s %s", strings[0], strings[1]);
+		asprintf(&cmd, "AT+CPIN=\"%s\",\"%s\"", strings[0], strings[1]);
+    } else
+        goto error;
+
+    err = at_send_command(cmd, &p_response);
+    free(cmd);
+
+    if (err < 0 || p_response->success == 0) {
+error:
+        RIL_onRequestComplete(t, RIL_E_PASSWORD_INCORRECT, NULL, 0);
+    } else {
+        RIL_onRequestComplete(t, RIL_E_SUCCESS, NULL, 0);
+    }
+    at_response_free(p_response);
+
+	if (isUltrasnow != 1) {
+		unlockWildcard();
+	}
+}
 
 /*** Callback methods from the RIL library to us ***/
 
@@ -1709,160 +1861,6 @@ setRadioState(RIL_RadioState newState)
         }
     }
 }
-
-static int ultraUnlock(){
-	ATResponse *p_response = NULL;
-	ATLine *p_cur;
-	int err;
-
-	err = at_send_command_singleline("AT+XGENDATA", "           \"ICE2_MODEM_", &p_response);
-	if (err != 0)
-		return -1;
-
-	char *Line = p_response->p_intermediates->line;
-	if(strstr(Line, "ICE2_MODEM_05.13.04") != NULL) {
-		at_send_command(bb051304, NULL);
-	} else if(strstr(Line, "ICE2_MODEM_05.12.01") != NULL) {
-		at_send_command(bb051201, NULL);
-	} else if(strstr(Line, "ICE2_MODEM_05.11.07") != NULL) {
-		at_send_command(bb051107, NULL);
-	} else if(strstr(Line, "ICE2_MODEM_04.26.08") != NULL) {
-		at_send_command(bb042608, NULL);
-	} else {
-		at_response_free(p_response);
-		isUltrasnow = 0;
-		LOGI("No matching baseband found for Ultrasn0w.");
-		return -1;
-	}
-
-	at_response_free(p_response);
-
-	at_send_command("at+xlck=0",NULL);
-	at_send_command("at+xlck=1,1,\"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\"",NULL);
-	at_send_command("at+xlck=1,2,\"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\"",NULL);
-	at_send_command("at+xlck=1,3,\"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\"",NULL);
-	at_send_command("at+xlck=1,4,\"00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\"",NULL);
-	at_send_command("at+xlck=2",NULL);
-	at_send_command("at",NULL);
-
-	if (getSIMStatus() != SIM_NETWORK_PERSONALIZATION) {
-		LOGI("Unlocked by ultrasn0w");
-		return 0;
-	}
-
-	LOGE("Ultrasn0w unlock unsuccessful");
-	return -1;
-}
-
-static int unlockWildcard()
-{
-	char buf[1000000];
-	int len;
-	int zero=0;
-	int iCnt=1;
-	char cUnlockString[2049];
-	char cUnlockPart[513];
-		
-	FILE *f = fopen(PATH_ACTIVATIONRECORD, "rb");
-	if(f == 0)
-	{
-		LOGD("No Activation Report Found");
-		return -1;
-	}
-	len = fread(buf, 1, 1000000, f);
-	fclose(f);
-
-	if(len <= 0)
-	{
-		LOGD("No Activation Record Found");
-		return -1;
-	}
-
-	int i;
-	short iFoundRecord = 0;
-	for(i = 0; i < (len-(int)strlen("WildcardTicket")); i++) {
-		if(memcmp(&buf[i], "WildcardTicket", strlen("WildcardTicket")) == 0)
-		{
-			iFoundRecord = 1;
-			break;
-		}
-	}
-	if(iFoundRecord == 1)
-	{
-		memcpy(cUnlockString, &buf[i+0x13], 2048);
-		for(i = 0; i < 2048; i++) {
-			if(cUnlockString[i] == '"') zero=1;
-			if(zero == 1) cUnlockString[i]='0';
-		}
-		cUnlockString[2048]='\0';
-
-		LOGD("Sending 1st Unlock Command");
-		//at+xlck=0
-		at_send_command("AT+XLCK=0", NULL);
-
-		char * cmd;
-
-		for(i = 0; i < 2048; i+=512) {
-			LOGD("Sending Unlock Payload");
-			strncpy(cUnlockPart, &cUnlockString[i], 512);
-			cUnlockPart[512]='\0';
-			LOGD("Sending Unlock Payload");
-			asprintf(&cmd, "AT+XLCK=1,%d,\"%s\"", iCnt, cUnlockPart);
-			at_send_command(cmd, NULL);
-			free(cmd);
-
-			iCnt++;
-		}
-		//at+xlck=2
-		LOGD("Sending Last Unlock Command");
-		at_send_command("AT+XLCK=2", NULL);
-
-		if (getSIMStatus() != SIM_NETWORK_PERSONALIZATION) {
-			LOGI("Unlocked");
-			return 0;
-		}
-
-		return -1;
-	}
-	else
-	{
-		LOGD("No Activation Record Found.");
-		return -1;
-	}
-}
-
-static void  requestEnterSimPin(void*  data, size_t  datalen, RIL_Token  t)
-{
-    ATResponse   *p_response = NULL;
-    int           err;
-    char*         cmd = NULL;
-    const char**  strings = (const char**)data;;
-
-    if ( datalen == sizeof(char*) ) {
-		//LOGI("PIN is: %s",strings[0]);
-		asprintf(&cmd, "AT+CPIN=\"%s\"", strings[0]);
-    } else if ( datalen == 2*sizeof(char*) ) {
-		//LOGI("2 Part PIN: %s %s", strings[0], strings[1]);
-		asprintf(&cmd, "AT+CPIN=\"%s\",\"%s\"", strings[0], strings[1]);
-    } else
-        goto error;
-
-    err = at_send_command(cmd, &p_response);
-    free(cmd);
-
-    if (err < 0 || p_response->success == 0) {
-error:
-        RIL_onRequestComplete(t, RIL_E_PASSWORD_INCORRECT, NULL, 0);
-    } else {
-        RIL_onRequestComplete(t, RIL_E_SUCCESS, NULL, 0);
-    }
-    at_response_free(p_response);
-
-	if (isUltrasnow != 1) {
-		unlockWildcard();
-	}
-}
-
 
 static int unlockBaseBand() {
 	int err;
