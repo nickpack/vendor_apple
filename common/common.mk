@@ -14,6 +14,7 @@ LIBERTAS := $(LOCAL_PATH)libertas/
 
 PRODUCT_PACKAGES += \
 	ADWLauncher \
+	FileManager \
 	Superuser
 
 PRODUCT_PROPERTY_OVERRIDES += \
