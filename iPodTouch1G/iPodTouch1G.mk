@@ -6,6 +6,7 @@ $(call inherit-product, $(COMMON)/common.mk)
 PRODUCT_NAME := iPodTouch1G
 PRODUCT_DEVICE := iPodTouch1G
 
+PRODUCT_POLICY := android.policy_mid
 
 PRODUCT_COPY_FILES += \
 	$(LOCAL_DIR)gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
