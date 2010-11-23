@@ -1108,23 +1108,23 @@ error:
 
 static void requestSetupDataCall(void *data, size_t datalen, RIL_Token t)
 {
-    const char *apn;
+/*    const char *apn;
     char *cmd;
     int err;
     ATResponse *p_response = NULL;
     char *response[2] = { "1", PPP_TTY_PATH };
 
-    apn = ((const char **)data)[2];
+    apn = ((const char **)data)[2];*/
 
 #ifdef USE_TI_COMMANDS
     // Config for multislot class 10 (probably default anyway eh?)
-    err = at_send_command("AT%CPRIM=\"GMM\",\"CONFIG MULTISLOT_CLASS=<10>\"",
+   /* err = at_send_command("AT%CPRIM=\"GMM\",\"CONFIG MULTISLOT_CLASS=<10>\"",
                         NULL);
 
-    err = at_send_command("AT%DATA=2,\"UART\",1,,\"SER\",\"UART\",0", NULL);
-#endif /* USE_TI_COMMANDS */
+    err = at_send_command("AT%DATA=2,\"UART\",1,,\"SER\",\"UART\",0", NULL);*/
+#endif
 
-    int fd, qmistatus;
+    /*int fd, qmistatus;
     size_t cur = 0;
     size_t len;
     ssize_t written, rlen;
@@ -1136,7 +1136,7 @@ static void requestSetupDataCall(void *data, size_t datalen, RIL_Token t)
     fd = open ("/dev/qmi", O_RDWR);
     if (fd >= 0) { /* the device doesn't exist on the emulator */
 
-	    LOGD("opened the qmi device\n");
+	    /*LOGD("opened the qmi device\n");
 	    asprintf(&cmd, "up:%s", apn);
 	    len = strlen(cmd);
 
@@ -1218,7 +1218,9 @@ static void requestSetupDataCall(void *data, size_t datalen, RIL_Token t)
     return;
 error:
     RIL_onRequestComplete(t, RIL_E_GENERIC_FAILURE, NULL, 0);
-    at_response_free(p_response);
+    at_response_free(p_response);*/
+
+	RIL_onRequestComplete(t, RIL_E_GENERIC_FAILURE, NULL, 0);
 
 }
 
