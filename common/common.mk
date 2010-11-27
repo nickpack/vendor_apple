@@ -18,7 +18,8 @@ PRODUCT_PACKAGES += \
 	Superuser
 
 PRODUCT_PROPERTY_OVERRIDES += \
-        ro.firmware_dir1=/host/firmware
+        ro.firmware_dir1=/host/firmware \
+	ro.firmware_dir2=/system/etc/firmware
 
 PRODUCT_COPY_FILES += \
 	$(LIBERTAS)LICENCE.libertas:system/etc/firmware/LICENCE.libertas \
