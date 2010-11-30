@@ -39,7 +39,7 @@ PRODUCT_PACKAGES := \
 	LatinIME \
 	Launcher2 \
 	MediaProvider \
-	Music \   
+	Music \
 	PicoTts \
 	Provision \
 	Protips \
