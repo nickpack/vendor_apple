@@ -1,11 +1,5 @@
 LOCAL_PATH := $(dir $(lastword $(MAKEFILE_LIST)))
 
-ifeq ($(TARGET_BUILD_TYPE),debug)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/sdk.mk)
-else
-$(call inherit-product, $(SRC_TARGET_DIR)/product/generic.mk)
-endif
-
 PRODUCT_MANUFACTURER := apple
 
 PRODUCT_POLICY := android.policy_phone
