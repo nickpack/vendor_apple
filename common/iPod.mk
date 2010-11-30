@@ -24,7 +24,6 @@ PRODUCT_PACKAGES := \
     Calculator \
     Calendar \
 	CalendarProvider \
-    Camera \
     CertInstaller \
 	Contacts \
 	ContactsProvider \
