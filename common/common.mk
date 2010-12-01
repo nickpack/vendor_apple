@@ -2,8 +2,6 @@ LOCAL_PATH := $(dir $(lastword $(MAKEFILE_LIST)))
 
 PRODUCT_MANUFACTURER := apple
 
-PRODUCT_POLICY := android.policy_phone
-
 LIBERTAS := $(LOCAL_PATH)libertas/
 
 PRODUCT_PACKAGES += \

@@ -14,7 +14,29 @@
 # limitations under the License.
 #
 
+PRODUCT_POLICY := android.policy_phone
+
 PRODUCT_PACKAGES := \
+	framework-res \
+    Browser \
+    CarHomeLauncher \
+    Contacts \
+    Home \
+    HTMLViewer \
+    Phone \
+    ApplicationsProvider \
+    ContactsProvider \
+    DownloadProvider \
+    MediaProvider \
+    PicoTts \
+    SettingsProvider \
+    TelephonyProvider \
+    TtsService \
+    VpnServices \
+    UserDictionaryProvider \
+    PackageInstaller \
+    DefaultContainerService \
+    Bugreport \
     AccountAndSyncSettings \
     CarHome \
     DeskClock \
@@ -40,4 +62,8 @@ PRODUCT_PACKAGES := \
     CalendarProvider \
     SyncProvider
 
-$(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
+PRODUCT_PROPERTY_OVERRIDES += \
+    media.stagefright.enable-player=true \
+    media.stagefright.enable-meta=true   \
+    media.stagefright.enable-scan=true   \
+    media.stagefright.enable-http=true
