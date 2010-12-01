@@ -21,10 +21,10 @@ PRODUCT_PACKAGES := \
 	Browser \
 	Bluetooth \
 	Bugreport \
-    Calculator \
-    Calendar \
+	Calculator \
+	Calendar \
 	CalendarProvider \
-    CertInstaller \
+	CertInstaller \
 	Contacts \
 	ContactsProvider \
 	DefaultContainerService \
@@ -34,25 +34,25 @@ PRODUCT_PACKAGES := \
 	Email \
 	framework-res \
 	Gallery \
-    Home \
-    HTMLViewer \
-    LatinIME \
-    Launcher2 \
-    MediaProvider \
-	Music \   
-    PicoTts \
+	Home \
+	HTMLViewer \
+	LatinIME \
+	Launcher2 \
+	MediaProvider \
+	Music \
+	PicoTts \
 	Provision \
-    Protips \
-    QuickSearchBox \
+	Protips \
+	QuickSearchBox \
 	Settings \
-    SettingsProvider \
+	SettingsProvider \
 	Sync \
 	SyncProvider \
-    TtsService \
-    VpnServices \
-    UserDictionaryProvider \
-    PackageInstaller \
-    Updater
+	TtsService \
+	VpnServices \
+	UserDictionaryProvider \
+	PackageInstaller \
+	Updater
 
 PRODUCT_PROPERTY_OVERRIDES += \
     media.stagefright.enable-player=true \
