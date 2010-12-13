@@ -143,7 +143,7 @@ static int InSpeakerMode;
 #define IPHONE_3GS 2
 #define IPAD_1G 3
 
-static int Platform;
+static int Platform = 0;
 
 void loudspeaker_vol(int vol)
 {
