@@ -1,4 +1,5 @@
-Apple Vendor for Android
+Apple Vendor
 -------------------------
+This repository contains apple specific ril's and device info
 
-NOTE: iPT2G and iPhone4 are skeleton products - the configurations herein are not correct, but are simply put in place for later
+NOTE: iPT2G, iPad1G and iPhone4 are skeleton products - the configurations herein are not correct, but are simply put in place for later
