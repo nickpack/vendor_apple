@@ -167,8 +167,7 @@ static void soundPhoneMode()
 	if(Platform == IPHONE_3G)
 	{
 		at_send_command("AT+XDRV=0,8,0,0", NULL);
-	} else
-	{
+	} else {
 		at_send_command("AT+XDRV=0,4", NULL);
 		at_send_command("AT+XDRV=0,20,0", NULL);
 	}
@@ -2313,6 +2312,30 @@ static void usage(char *s)
 #endif
 }
 
+static void platformDetect()
+{
+	char buff[PROPERTY_VALUE_MAX];
+    if(property_get("ro.product.device", buff, NULL) > 0 && strcmp(buff, "iPhone3G") == 0) {
+		Platform = IPHONE_3G;
+		s_device_path = "/dev/ttyS4";
+	} else if(property_get("ro.product.device", buff, NULL) > 0 && strcmp(buff, "iPhone3GS") == 0) {
+		Platform = IPHONE_3GS;
+		s_device_path = "/dev/ttyS1";
+	}  else if(property_get("ro.product.device", buff, NULL) > 0 && strcmp(buff, "iPad1G") == 0) {
+		Platform = IPAD_1G;	
+		/* THIS IS PROBABLY COMPRETRY WRONG TODO: FIX IT! */
+		s_device_path = "/dev/ttyS1";
+	}
+	
+	if(Platform)
+	switch(Platform) {
+	   case IPHONE_3G: LOGI("Platform: iPhone 3G\n"); break;
+	   case IPHONE_3GS: LOGI("Platform: iPhone 3GS\n"); break;
+	   case IPAD_1G: LOGI("Platform: iPad 1G\n"); break;
+	   default: LOGE("Platform: UNKNOWN!"); break;
+	}
+}
+
 static void *
 mainLoop(void *param)
 {
@@ -2405,18 +2428,7 @@ const RIL_RadioFunctions *RIL_Init(const struct RIL_Env *env, int argc, char **a
 
     s_rilenv = env;
 
-    char buff[PROPERTY_VALUE_MAX];
-    if(property_get("ro.product.device", buff, NULL) > 0 && strcmp(buff, "iPhone3G") == 0) {
-		Platform = IPHONE_3G;
-		s_device_path = "/dev/ttyS4";
-	} else if(property_get("ro.product.device", buff, NULL) > 0 && strcmp(buff, "iPhone3GS") == 0) {
-		Platform = IPHONE_3GS;
-		s_device_path = "/dev/ttyS1";
-	}  else if(property_get("ro.product.device", buff, NULL) > 0 && strcmp(buff, "iPad1G") == 0) {
-		Platform = IPAD_1G;	
-		/* THIS IS PROBABLY COMPRETRY WRONG TODO: FIX IT! */
-		s_device_path = "/dev/ttyS1";
-	}
+	platformDetect();
 
     while ( -1 != (opt = getopt(argc, argv, "p:d:s:"))) {
         switch (opt) {
@@ -2446,14 +2458,6 @@ const RIL_RadioFunctions *RIL_Init(const struct RIL_Env *env, int argc, char **a
         }
     }
 
-    if(Platform)
-	switch(Platform) {
-	   case IPHONE_3G: LOGI("Platform: iPhone 3G\n"); break;
-	   case IPHONE_3GS: LOGI("Platform: iPhone 3GS\n"); break;
-	   case IPAD_1G: LOGI("Platform: iPad 1G\n"); break;
-	   default: LOGE("I dont know who I am!"); break;
-	}
-
     if (s_port < 0 && s_device_path == NULL) {
         usage(argv[0]);
         return NULL;
@@ -2472,18 +2476,7 @@ int main (int argc, char **argv)
     int fd = -1;
     int opt;
 
-    char buff[PROPERTY_VALUE_MAX];
-    if(property_get("ro.product.device", buff, NULL) > 0 && strcmp(buff, "iPhone3G") == 0) {
-		Platform = IPHONE_3G;
-		s_device_path = "/dev/ttyS4";
-	} else if(property_get("ro.product.device", buff, NULL) > 0 && strcmp(buff, "iPhone3GS") == 0) {
-		Platform = IPHONE_3GS;
-		s_device_path = "/dev/ttyS1";
-	}  else if(property_get("ro.product.device", buff, NULL) > 0 && strcmp(buff, "iPad1G") == 0) {
-		Platform = IPAD_1G;	
-		/* THIS IS PROBABLY COMPRETRY WRONG TODO: FIX IT! */
-		s_device_path = "/dev/ttyS1";
-	}
+	platformDetect();
 
     while ( -1 != (opt = getopt(argc, argv, "p:d:"))) {
         switch (opt) {
@@ -2510,14 +2503,6 @@ int main (int argc, char **argv)
                 usage(argv[0]);
         }
     }
-
-    if(Platform)
-	switch(Platform) {
-	   case IPHONE_3G: LOGI("Platform: iPhone 3G\n"); break;
-	   case IPHONE_3GS: LOGI("Platform: iPhone 3GS\n"); break;
-	   case IPAD_1G: LOGI("Platform: iPad 1G\n"); break;
-	   default: LOGE("I dont know who I am!"); break;
-	}
 
     if (s_port < 0 && s_device_path == NULL) {
         usage(argv[0]);
