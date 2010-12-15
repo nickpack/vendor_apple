@@ -2276,8 +2276,6 @@ const RIL_RadioFunctions *RIL_Init(const struct RIL_Env *env, int argc, char **a
         }
     }
 
-	}
-
     if (s_port < 0 && s_device_path == NULL) {
         usage(argv[0]);
         return NULL;
