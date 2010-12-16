@@ -135,10 +135,6 @@ static void setRadioState(RIL_RadioState newState);
 
 static int InSpeakerMode;
 
-#define IPHONE_2G 1
-
-static int Platform;
-
 void loudspeaker_vol(int vol)
 {
 	char buf[100];
@@ -1958,9 +1954,6 @@ static void initializeCallback(void *param)
 
     setRadioState (RADIO_STATE_OFF);
 
-    if(Platform && Platform != IPHONE_2G)
-	unlockBaseBand();
-
     at_handshake();
 
     /* note: we don't check errors here. Everything important will
@@ -2243,8 +2236,6 @@ const RIL_RadioFunctions *RIL_Init(const struct RIL_Env *env, int argc, char **a
     s_rilenv = env;
 
     char buff[PROPERTY_VALUE_MAX];
-   
-	Platform = IPHONE_2G;
 
     s_device_path = "/dev/ttyS1";
 
@@ -2295,7 +2286,7 @@ int main (int argc, char **argv)
     int opt;
 
     char buff[PROPERTY_VALUE_MAX];
-  	Platform = IPHONE_2G;
+
   	s_device_path = "/dev/ttyS1";
 
     while ( -1 != (opt = getopt(argc, argv, "p:d:"))) {
