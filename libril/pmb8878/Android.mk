@@ -27,8 +27,8 @@ ifeq ($(TARGET_DEVICE),dream)
   LOCAL_CFLAGS += -DPOLL_CALL_STATE -DUSE_QMI
 endif
 
-ifeq (foo,foo)
   #build shared library
+
   LOCAL_SHARED_LIBRARIES += \
       libcutils libutils
   LOCAL_LDLIBS += -lpthread
@@ -36,11 +36,6 @@ ifeq (foo,foo)
   LOCAL_PRELINK_MODULE := false
   LOCAL_MODULE:= libril.apple
   LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
+LOCAL_MODULE_TAGS := eng
+
   include $(BUILD_SHARED_LIBRARY)
-else
-  #build executable
-  LOCAL_SHARED_LIBRARIES += \
-      libril
-  LOCAL_MODULE:= reference-ril
-  include $(BUILD_EXECUTABLE)
-endif
