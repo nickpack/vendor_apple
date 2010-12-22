@@ -18,47 +18,61 @@
 PRODUCT_POLICY := android.policy_phone
 
 PRODUCT_PACKAGES := \
-	AccountAndSyncSettings \
-	ApplicationsProvider \
-	AlarmProvider \
-	Browser \
-	Bluetooth \
-	Bugreport \
-	Calculator \
-	Calendar \
-	CalendarProvider \
-	CertInstaller \
-	Contacts \
-	ContactsProvider \
-	DefaultContainerService \
-	DeskClock \
-	DownloadProvider \
-	DrmProvider \
-	Email \
-	framework-res \
-	Gallery \
-	Home \
-	HTMLViewer \
-	LatinIME \
-	Launcher2 \
-	MediaProvider \
-	Music \
-	PicoTts \
-	Provision \
-	Protips \
-	QuickSearchBox \
-	Settings \
-	SettingsProvider \
-	Sync \
-	SyncProvider \
-	TtsService \
-	VpnServices \
-	UserDictionaryProvider \
-	PackageInstaller \
-	Updater
+    bouncycastle \
+    com.android.location.provider \
+    com.android.location.provider.xml \
+    core \
+    core-junit \
+    create_test_dmtrace \
+    dalvikvm \
+    dexdeps \
+    dexdump \
+    dexlist \
+    dexopt \
+    dmtracedump \
+    dvz \
+    dx \
+    ext \
+    framework-res \
+    hprof-conv \
+    icu.dat \
+    jasmin \
+    jasmin.jar \
+    libcrypto \
+    libdex \
+    libdvm \
+    libexpat \
+    libicui18n \
+    libicuuc \
+    libjavacore \
+    libnativehelper \
+    libnfc_ndef \
+    libsqlite_jni \
+    libssl \
+    libz \
+    sqlite-jdbc \
+    Browser \
+    Contacts \
+    Home \
+    HTMLViewer \
+    ApplicationsProvider \
+    ContactsProvider \
+    DownloadProvider \
+    DownloadProviderUi \
+    MediaProvider \
+    PicoTts \
+    SettingsProvider \
+    TtsService \
+    VpnServices \
+    UserDictionaryProvider \
+    PackageInstaller \
+    DefaultContainerService \
+    Bugreport
 
-PRODUCT_PROPERTY_OVERRIDES += \
-    media.stagefright.enable-player=true \
-    media.stagefright.enable-meta=true   \
-    media.stagefright.enable-scan=true   \
-    media.stagefright.enable-http=true
+# host-only dependencies
+ifeq ($(WITH_HOST_DALVIK),true)
+    PRODUCT_PACKAGES += \
+        bouncycastle-hostdex \
+        core-hostdex \
+        libjavacore-host
+endif
