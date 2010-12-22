@@ -67,7 +67,29 @@ PRODUCT_PACKAGES := \
     UserDictionaryProvider \
     PackageInstaller \
     DefaultContainerService \
-    Bugreport
+    Bugreport \
+	AccountAndSyncSettings \
+	DeskClock \
+	AlarmProvider \
+	Bluetooth \
+	Calculator \
+	Calendar \
+	CertInstaller \
+	DrmProvider \
+	Email \
+	Gallery \
+	LatinIME \
+	Launcher2 \
+	Music \
+	Provision \
+	Protips \
+	QuickSearchBox \
+	Settings \
+	Sync \
+	SystemUI \
+	Updater \
+	CalendarProvider \
+	SyncProvider
 
 # host-only dependencies
 ifeq ($(WITH_HOST_DALVIK),true)
