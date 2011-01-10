@@ -24,4 +24,5 @@ LOCAL_SHARED_LIBRARIES := liblog \
 		libcutils
 LOCAL_SRC_FILES := sensors.c
 LOCAL_MODULE := sensors.apple
+LOCAL_MODULE_TAGS := eng
 include $(BUILD_SHARED_LIBRARY)

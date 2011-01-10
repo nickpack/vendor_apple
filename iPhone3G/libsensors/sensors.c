@@ -228,7 +228,7 @@ static int control_wake(struct sensors_control_device_t *dev)
 
 
 
-int sensors_open(struct sensors_data_device_t *dev, native_handle_t* hd)
+static inline int sensors_open(struct sensors_data_device_t *dev, native_handle_t* hd)
 {
     event_fd = dup(hd->data[0]);
 
@@ -248,7 +248,7 @@ static int control_close(struct hw_device_t *dev)
     control_fd[1] = -1;
     return 0;
 }
-int sensors_close(struct sensors_data_device_t *dev)
+static inline int sensors_close(struct sensors_data_device_t *dev)
 {
     if (event_fd > 0) {
         close(event_fd);
