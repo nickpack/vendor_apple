@@ -35,6 +35,7 @@ ifeq (foo,foo)
   LOCAL_CFLAGS += -DRIL_SHLIB
   LOCAL_PRELINK_MODULE := false
   LOCAL_MODULE:= libril.apple
+  LOCAL_MODULE_TAGS := eng  
   LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
   include $(BUILD_SHARED_LIBRARY)
 else
