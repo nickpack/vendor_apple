@@ -6,6 +6,7 @@ LIBERTAS := $(LOCAL_PATH)libertas/
 
 PRODUCT_PACKAGES += \
 	ADWLauncher \
+	Launcher2 \
 	FileManager \
 	Superuser
 
