@@ -36,11 +36,13 @@ ifeq (foo,foo)
   LOCAL_PRELINK_MODULE := false
   LOCAL_MODULE:= libril.apple
   LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
+  LOCAL_MODULE_TAGS := eng
   include $(BUILD_SHARED_LIBRARY)
 else
   #build executable
   LOCAL_SHARED_LIBRARIES += \
-      libril
+		libril
   LOCAL_MODULE:= reference-ril
+  LOCAL_MODULE_TAGS := eng
   include $(BUILD_EXECUTABLE)
 endif

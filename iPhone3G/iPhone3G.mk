@@ -12,6 +12,7 @@ $(call inherit-product, $(COMMON)/common.mk)
 PRODUCT_NAME := iPhone3G
 PRODUCT_DEVICE := iPhone3G
 
+PRODUCT_PACKAGE_OVERLAYS += vendor/apple/overlay/mbxlite
 
 PRODUCT_COPY_FILES += \
 	$(LOCAL_DIR)gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
