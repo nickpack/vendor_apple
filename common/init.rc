@@ -304,7 +304,11 @@ on boot
     setprop alsa.mixer.capture.earpiece Capture
     setprop alsa.mixer.playback.headset Master
     setprop alsa.mixer.playback.speaker Master
-
+    
+    # iPhone 2G
+    chown root radio /dev/ttyS1
+    chmod 0666 /dev/ttyS1
+    # iPhone 3G
     chown root radio /dev/ttyS4
     chmod 0666 /dev/ttyS4
 
