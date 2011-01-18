@@ -176,6 +176,10 @@ on post-fs
     chown root root /cache/lost+found
     chmod 0770 /cache/lost+found
 
+    # WiFi related
+    mkdir /data/misc/wifi/sockets 0770 wifi wifi
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+
 on boot
 # basic network init
     ifup lo
@@ -390,9 +394,14 @@ service dbus /system/bin/dbus-daemon --system --nofork
     user bluetooth
     group bluetooth net_bt_admin
 
-service wpa_supplicant /system/bin/wpa_supplicant \
-    -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+service wpa_supplicant /system/bin/wpa_supplicant -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+    socket wpa_wlan0 dgram 0660 wifi wifi
     disabled
+    oneshot
+
+service dhcpcd /system/bin/dhcpcd -ABKL
+    disabled
+    oneshot
 
 service bluetoothd /system/bin/bluetoothd -n
     socket bluetooth stream 660 bluetooth bluetooth
@@ -452,6 +461,3 @@ service dumpstate /system/bin/dumpstate -s
     socket dumpstate stream 0660 shell log
     disabled
     oneshot
-
-on property:init.svc.wpa_supplicant=stopped
-    stop dhcpcd
