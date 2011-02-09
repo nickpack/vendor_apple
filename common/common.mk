@@ -5,7 +5,6 @@ PRODUCT_MANUFACTURER := apple
 LIBERTAS := $(LOCAL_PATH)libertas/
 
 PRODUCT_PACKAGES += \
-	Launcher2 \
 	FileManager \
 	Superuser
 
@@ -30,5 +29,8 @@ PRODUCT_BOARD := apple
 
 PRODUCT_PACKAGE_OVERLAYS += vendor/apple/overlay/common
 
-include frameworks/base/data/sounds/AudioPackage4.mk
+$(call inherit-product-if-exists, frameworks/base/data/sounds/AllAudio.mk)
 
+$(call inherit-product-if-exists, external/svox/pico/lang/all_pico_languages.mk)
+
+$(call inherit-product-if-exists, build/target/product/locales_full.mk)

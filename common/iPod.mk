@@ -89,7 +89,13 @@ PRODUCT_PACKAGES := \
 	SystemUI \
 	Updater \
 	CalendarProvider \
-	SyncProvider
+	SyncProvider \
+	OpenWnn \
+	PinyinIME \
+	VoiceDialer \
+	libWnnEngDic \
+	libWnnJpnDic \
+	libwnndict
 
 # host-only dependencies
 ifeq ($(WITH_HOST_DALVIK),true)
