@@ -20,7 +20,6 @@ PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
 	$(LOCAL_PATH)init.rc:root/init.rc \
 	$(LOCAL_PATH)initDroid.sh:root/initDroid.sh \
-	# DIRTY DIRTY DIRTY - FIXXOR THIS PL0X
 	$(PREBUILT)fsck.ext:root/sbin/fsck.ext \
 	$(PREBUILT)fsck.hfs:root/sbin/fsck.hfs \
 	frameworks/base/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
