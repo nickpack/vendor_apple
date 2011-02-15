@@ -4,6 +4,9 @@ PRODUCT_MANUFACTURER := apple
 
 LIBERTAS := $(LOCAL_PATH)libertas/
 
+# DIRTY DIRTY DIRTY - FIXXOR THIS PL0X
+PREBUILT := $(LOCAL_PATH)prebuilt/
+
 PRODUCT_PACKAGES += \
 	FileManager \
 	Superuser
@@ -15,8 +18,11 @@ PRODUCT_COPY_FILES += \
 	$(LIBERTAS)LICENCE.libertas:system/etc/firmware/LICENCE.libertas \
 	$(LIBERTAS)sd8686.bin:system/etc/firmware/sd8686.bin \
 	$(LOCAL_PATH)wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
-	$(COMMON)init.rc:root/init.rc \
-	$(COMMON)initDroid.sh:root/initDroid.sh \
+	$(LOCAL_PATH)init.rc:root/init.rc \
+	$(LOCAL_PATH)initDroid.sh:root/initDroid.sh \
+	# DIRTY DIRTY DIRTY - FIXXOR THIS PL0X
+	$(PREBUILT)fsck.ext:root/sbin/fsck.ext \
+	$(PREBUILT)fsck.hfs:root/sbin/fsck.hfs \
 	frameworks/base/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
 	frameworks/base/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
 	frameworks/base/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
