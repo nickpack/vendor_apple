@@ -17,7 +17,7 @@
 PRODUCT_POLICY := android.policy_phone
 
 PRODUCT_PACKAGES := \
-		bouncycastle \
+	    bouncycastle \
 	    com.android.location.provider \
 	    com.android.location.provider.xml \
 	    core \
@@ -69,31 +69,32 @@ PRODUCT_PACKAGES := \
 	    PackageInstaller \
 	    DefaultContainerService \
 	    Bugreport \
-		AccountAndSyncSettings \
-		DeskClock \
-		AlarmProvider \
-		Bluetooth \
-		Calculator \
-		Calendar \
-		Camera \
-		CertInstaller \
-		DrmProvider \
-		Email \
-		Gallery \
-		LatinIME \
-		Launcher2 \
-		Mms \
-		Music \
-		Provision \
-		Protips \
-		QuickSearchBox \
-		Settings \
-		Sync \
-		SystemUI \
-		Updater \
-		CalendarProvider \
-		SyncProvider \
-		VoiceDialer
+	    AccountAndSyncSettings \
+	    DeskClock \
+	    AlarmProvider \
+	    Bluetooth \
+	    Calculator \
+	    Calendar \
+	    Camera \
+	    CertInstaller \
+	    DrmProvider \
+	    Email \
+	    Gallery \
+	    LatinIME \
+	    Launcher2 \
+	    Mms \
+	    Music \
+	    Provision \
+	    Protips \
+	    QuickSearchBox \
+	    Settings \
+	    Stk \
+	    Sync \
+	    SystemUI \
+	    Updater \
+	    CalendarProvider \
+	    SyncProvider \
+	    VoiceDialer
 
 # host-only dependencies
 ifeq ($(WITH_HOST_DALVIK),true)
