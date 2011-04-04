@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// Proximity sensor is commented, because I have no fucking idea wtf the chip is, nobody else seems to know and I aint brave enough to dismantle enough to find out...
 #define LOG_TAG "Sensors"
 
 #include <hardware/sensors.h>
@@ -99,7 +100,7 @@ struct sensors_poll_context_t {
 private:
     enum {
         light           = 0,
-        proximity       = 1,
+        //proximity       = 1,
         accel           = 2,
         numSensorDrivers,
         numFds,
@@ -114,8 +115,9 @@ private:
     int handleToDriver(int handle) const {
         switch (handle) {
             case ID_A:
-            case ID_P:
-                return proximity;
+		return accel;
+           /* case ID_P:
+                return proximity; */
             case ID_L:
                 return light;
             case ID_GY:
