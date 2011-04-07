@@ -42,7 +42,7 @@
 #include <cutils/properties.h>
 
 /******************************************************************************/
-
+#define CONVERT (GRAVITY_EARTH/64.0f)
 #define ID_BASE SENSORS_HANDLE_BASE
 #define ID_ACCELERATION (ID_BASE+0)
 
@@ -139,14 +139,16 @@ static int sensors_close_idroid(struct hw_device_t *dev)
 
 static int sensors_activate_idroid(struct sensors_poll_device_t *dev, int handle, int enabled)
 {
-    if (sensor_fd < 0) {
-        sensor_fd = open(SYSFS_PATH "position", O_RDONLY | O_NONBLOCK);
-        if (sensor_fd < 0) {
-            LOGE("Opening position failed in %s: %s", __FUNCTION__, strerror(errno));
-            return -1;
-        }
-    }
-   
+    if (1) {
+		if (sensor_fd < 0) {
+        	sensor_fd = open(SYSFS_PATH "position", O_RDONLY | O_NONBLOCK);
+        	if (sensor_fd < 0) {
+            	LOGE("Opening position failed in %s: %s", __FUNCTION__, strerror(errno));
+            	return -1;
+        	}
+    	}
+   }
+
     LOGD("%s\n", __func__);
     write_int(SYSFS_PATH "ths", DEFAULT_THRESHOLD);
 
@@ -187,11 +189,11 @@ static int sensors_poll_idroid(struct sensors_poll_device_t *dev, sensors_event_
         return -errno;
     }
 
-    float x = 0, y = 0, z = 0;
-    sscanf(coord, "%f %f %f\n", &x, &y, &z);
-    event->acceleration.x = (-GRAVITY_EARTH * y) / 1000;
-    event->acceleration.y = (-GRAVITY_EARTH * x) / 1000;
-    event->acceleration.z = (-GRAVITY_EARTH * z) / 1000;
+    int x = 0, y = 0, z = 0;
+    sscanf(coord, "%d, %d, %d\n", &x, &y, &z);
+    event->acceleration.x = (x * CONVERT);
+    event->acceleration.y = (y * CONVERT);
+    event->acceleration.z = (z * CONVERT);
     event->timestamp = 0;
     event->version = sizeof(struct sensors_event_t);
     event->type = ID_ACCELERATION;
@@ -207,7 +209,7 @@ static int sensors_poll_idroid(struct sensors_poll_device_t *dev, sensors_event_
             close(old_fd);
     }
 
-    LOGD("%s: sensor event %f, %f, %f\n", __FUNCTION__,
+    LOGD("%s: sensor event %d, %d, %d\n", __FUNCTION__,
          event->acceleration.x, event->acceleration.y,
          event->acceleration.z);
     return 1;
