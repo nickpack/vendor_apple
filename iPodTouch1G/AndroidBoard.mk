@@ -7,6 +7,7 @@ LOCAL_MODULE_TAGS := eng
 include $(BUILD_KEY_CHAR_MAP)
 
 SUBDIRS := \
-	$(COMMON)/AndroidBoardCommon.mk
+	$(COMMON)/AndroidBoardCommon.mk \
+	$(LOCAL_PATH)/libsensors/Android.mk
 
 include $(SUBDIRS)
