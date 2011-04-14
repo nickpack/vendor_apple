@@ -151,9 +151,15 @@ static int sensors_poll_idroid(struct sensors_poll_device_t *dev, sensors_event_
 
     int x = 0, y = 0, z = 0;
     sscanf(coord, "%d, %d, %d\n", &x, &y, &z);
-    event->acceleration.x = (GRAVITY_EARTH * x) / 1000;
-    event->acceleration.y = (GRAVITY_EARTH * y) / 1000;
-    event->acceleration.z = (GRAVITY_EARTH * z) / 1000;
+    /* nickp666: I know this is incredibly fucking retarded, but for the moment it will have to do, I dont have a lot of time right now, and this works so bite me you fuckers!
+	 * --BEGIN FILTHY HAXX--
+	 */
+	event->acceleration.x = (signed char) x * (GRAVITY_EARTH / 64.0f);
+	event->acceleration.y = (signed char) y * (-GRAVITY_EARTH / 64.0f);
+	event->acceleration.z = (signed char) z * (-GRAVITY_EARTH / 64.0f);
+	/**
+	 * --END FILTHY HAXX--
+	 */
     event->timestamp = 0;
     event->version = sizeof(struct sensors_event_t);
     event->type = ID_ACCELERATION;
