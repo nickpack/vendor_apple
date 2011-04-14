@@ -8,6 +8,7 @@ include $(BUILD_KEY_CHAR_MAP)
 
 SUBDIRS := \
 	$(LOCAL_PATH)/../libril/pmb8876/Android.mk \
+	$(LOCAL_PATH)/libsensors/Android.mk \
 	$(COMMON)/AndroidBoardCommon.mk
 
 include $(SUBDIRS)
