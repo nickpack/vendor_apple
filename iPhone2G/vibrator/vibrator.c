@@ -22,7 +22,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-static int sendit(int timeout_ms)
+#include <hardware_legacy/vibrator.h>
+
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+
+int sendit(int timeout_ms)
 {
 		int nwr, ret,fd;
 		char value[100];

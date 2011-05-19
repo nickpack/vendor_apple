@@ -29,7 +29,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
-static int sendit(int timeout_ms)
+int sendit(int timeout_ms)
 {
 		int nwr, ret, fd;
 		char value[20];
