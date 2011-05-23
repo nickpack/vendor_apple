@@ -8,6 +8,7 @@ LIBERTAS := $(LOCAL_PATH)libertas/
 PREBUILT := $(LOCAL_PATH)prebuilt/
 
 PRODUCT_PACKAGES += \
+	AndroidTerm \
 	FileManager \
 	Superuser
 
