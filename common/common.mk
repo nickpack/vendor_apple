@@ -18,6 +18,7 @@ PRODUCT_COPY_FILES += \
 	$(LIBERTAS)LICENCE.libertas:system/etc/firmware/LICENCE.libertas \
 	$(LIBERTAS)sd8686.bin:system/etc/firmware/sd8686.bin \
 	$(LOCAL_PATH)wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
+	$(LOCAL_PATH)dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf \
 	$(LOCAL_PATH)init.rc:root/init.rc \
 	$(LOCAL_PATH)initDroid.sh:root/initDroid.sh \
 	$(PREBUILT)fsck.ext:root/sbin/fsck.ext \
