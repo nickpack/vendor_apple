@@ -7,11 +7,6 @@ LIBERTAS := $(LOCAL_PATH)libertas/
 # DIRTY DIRTY DIRTY - FIXXOR THIS PL0X
 PREBUILT := $(LOCAL_PATH)prebuilt/
 
-PRODUCT_PACKAGES += \
-	AndroidTerm \
-	FileManager \
-	Superuser
-
 PRODUCT_COPY_FILES += \
 	$(LIBERTAS)LICENCE.libertas:system/etc/firmware/LICENCE.libertas \
 	$(LIBERTAS)sd8686.bin:system/etc/firmware/sd8686.bin \
@@ -36,10 +31,3 @@ PRODUCT_BOARD := apple
 
 PRODUCT_PACKAGE_OVERLAYS += vendor/apple/overlay/common
 
-# This is borked, but will no doubt appear later
-#$(call inherit-product-if-exists, frameworks/base/data/sounds/AllAudio.mk)
-include frameworks/base/data/sounds/AudioPackage4.mk
-
-$(call inherit-product-if-exists, external/svox/pico/lang/all_pico_languages.mk)
-
-$(call inherit-product-if-exists, build/target/product/locales_full.mk)
