@@ -10,7 +10,11 @@ $(call inherit-product, vendor/cyanogen/products/common_full.mk)
 $(call inherit-product, vendor/cyanogen/products/gsm.mk)
 
 PRODUCT_NAME := iPhone3G
+PRODUCT_BRAND := iDroid
 PRODUCT_DEVICE := iPhone3G
+PRODUCT_MODEL := iPhone 3G
+PRODUCT_MANUFACTURER := apple
+PRODUCT_BUILD_PROP_OVERRIDES += PRODUCT_NAME=iphone BUILD_ID=GRJ22 BUILD_DISPLAY_ID=GRJ22 BUILD_FINGERPRINT=apple/iphone:2.3.4/GRJ22/121341:user/release-keys PRIVATE_BUILD_DESC="iphone-user 2.3.4 GRJ22 121341 release-keys" BUILD_NUMBER=121341
 
 #
 # Set ro.modversion
@@ -35,4 +39,3 @@ PRODUCT_COPY_FILES += \
 	vendor/cyanogen/prebuilt/mdpi/media/bootanimation.zip:system/media/bootanimation.zip
 
 PRODUCT_PACKAGE_OVERLAYS += vendor/apple/overlay/mbxlite
-
