@@ -1,6 +1,9 @@
 LOCAL_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 COMMON := $(subst iPhone3G,common,$(LOCAL_DIR))
 
+$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
+
 $(call inherit-product, $(COMMON)/common.mk)
 
 # Inherit some common cyanogenmod stuff.
