@@ -1,7 +1,7 @@
 LOCAL_PATH := $(call my-dir)
 COMMON := $(dir $(LOCAL_PATH))common
 
-BOARD_HAS_VIBRATOR := ../../vendor/apple/iPhone3G/vibrator/vibrator.c
+BOARD_HAS_VIBRATOR_IMPLEMENTATION := ../../vendor/apple/iPhone3G/vibrator/vibrator.c
 
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := gpio-keys.kcm
