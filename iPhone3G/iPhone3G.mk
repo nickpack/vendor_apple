@@ -12,6 +12,9 @@ $(call inherit-product, vendor/cyanogen/products/common_full.mk)
 # Include GSM stuff
 $(call inherit-product, vendor/cyanogen/products/gsm.mk)
 
+# The gps config appropriate for this device
+$(call inherit-product, device/common/gps/gps_eu.mk)
+
 PRODUCT_NAME := iPhone3G
 PRODUCT_BRAND := iDroid
 PRODUCT_DEVICE := iPhone3G
